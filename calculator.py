@@ -90,6 +90,7 @@ def calculation():
 
 fart_color = '#000000'
 input_box = Entry(font=("Segoe UI Semibold", 35), bg="#f7f7f7", bd=0, justify=RIGHT)
+memory = Listbox(window, bg="#f7f7f7", bd=0)
 
 
 def add_symbol(number):
@@ -101,7 +102,20 @@ def delete_symbol():
 
 
 def delete_all():
-    input_box.delete(0, len(input_box.get()))
+    input_box.delete(0, END)
+
+
+def add_to_memory():
+    memory.insert(0, input_box.get())
+
+
+def get_from_memory():
+    input_box.delete(0, END)
+    input_box.insert(0, memory.get(0))
+
+
+def clear_memory():
+    memory.delete(0, END)
 
 
 one = Button(text='1', font='Times 16', bg='#ffffff', highlightcolor='#000000', command=lambda: add_symbol(1))
@@ -124,6 +138,9 @@ addition = Button(text='+', font='Times 16', bg='#ffffff', activebackground='#fb
 floating_point = Button(text=',', font='Times 16', bg='#ffffff', activebackground='#fbfbfb', command=lambda: add_symbol(','))
 left_bracket = Button(text='(', font='Times 16', bg='#ffffff', activebackground='#fbfbfb', command=lambda: add_symbol('('))
 right_bracket = Button(text=')', font='Times 16', bg='#ffffff', activebackground='#fbfbfb', command=lambda: add_symbol(')'))
+memory_set = Button(text='MS', font='Times 16', bg='#ffffff', activebackground='#fbfbfb', command=add_to_memory)
+memory_recall = Button(text='MR', font='Times 16', bg='#ffffff', activebackground='#fbfbfb', command=get_from_memory)
+memory_clear = Button(text='MC', font='Times 16', bg='#ffffff', activebackground='#fbfbfb', command=clear_memory)
 equal = Button(text='=', font='Times 16', bg='#363533', fg='#f9f9f9', activebackground='#5c5b59', activeforeground='#bebdbd', command=calculation)
 fart = Button(text="fart", font='Times 16', fg=fart_color)
 
@@ -148,9 +165,14 @@ equal.place(x=460, y=507, width=150, height=55)
 floating_point.place(x=308, y=507, width=150, height=55)
 left_bracket.place(x=156, y=279, width=150, height=55)
 right_bracket.place(x=308, y=279, width=150, height=55)
+memory_set.place(x=4, y=222, width=150, height=55)
+memory_recall.place(x=4, y=279, width=150, height=55)
+memory_clear.place(x=156, y=222, width=150, height=55)
 fart.place(x=4, y=507, width=150, height=55)
 
 input_box.place(x=0, y=75, width=594, height=65)
+input_box.focus()
+memory.place(x=650, y=50)
 
 window.mainloop()
 
@@ -160,4 +182,3 @@ window.mainloop()
 # TODO: память
 # TODO: кнопка пердежа (прикольчик!)
 # TODO: UNIT тесты............
-# TODO: автонаведение на input_box
