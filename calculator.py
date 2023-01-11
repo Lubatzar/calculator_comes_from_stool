@@ -89,8 +89,19 @@ def calculation():
 
 
 fart_color = '#000000'
-input_box = Entry(font=("Segoe UI Semibold", 35), bg="#f7f7f7", bd=0, justify=RIGHT)
-memory = Listbox(window, bg="#f7f7f7", bd=0)
+
+input_box = Entry(font=("Segoe UI Semibold", 35), width=22, bg="#f7f7f7", selectbackground="#4c4a48", bd=0, justify=RIGHT)
+input_box.place(x=0, y=75, width=594, height=65)
+input_box.configure()
+input_box.focus()
+
+scrollbar = Scrollbar(window)
+scrollbar.place(x=910, height=571)
+memory = Listbox(window, font=("Segoe UI Semibold", 15), bg="#f7f7f7", selectbackground="#eaeaea",
+                 selectforeground="#000000", bd=0, highlightthickness=0, height=17, justify=RIGHT, yscrollcommand=scrollbar.set)
+memory.place(x=683, y=59)
+scrollbar.config(command=memory.yview)
+
 
 
 def add_symbol(number):
@@ -111,7 +122,10 @@ def add_to_memory():
 
 def get_from_memory():
     input_box.delete(0, END)
-    input_box.insert(0, memory.get(0))
+    try:
+        input_box.insert(0, memory.get(memory.curselection()))
+    except:
+        input_box.insert(0, memory.get(0))
 
 
 def clear_memory():
@@ -128,6 +142,16 @@ seven = Button(text='7', font='Times 16', bg='#ffffff', activebackground='#fbfbf
 eight = Button(text='8', font='Times 16', bg='#ffffff', activebackground='#fbfbfb', command=lambda: add_symbol(8))
 nine = Button(text='9', font='Times 16', bg='#ffffff', activebackground='#fbfbfb', command=lambda: add_symbol(9))
 zero = Button(text='0', font='Times 16', bg='#ffffff', activebackground='#fbfbfb', command=lambda: add_symbol(0))
+one.place(x=4, y=450, width=150, height=55)
+two.place(x=156, y=450, width=150, height=55)
+three.place(x=308, y=450, width=150, height=55)
+four.place(x=4, y=393, width=150, height=55)
+five.place(x=156, y=393, width=150, height=55)
+six.place(x=308, y=393, width=150, height=55)
+seven.place(x=4, y=336, width=150, height=55)
+eight.place(x=156, y=336, width=150, height=55)
+nine.place(x=308, y=336, width=150, height=55)
+zero.place(x=156, y=507, width=150, height=55)
 
 backspace = Button(text='←', font='Times 16', bg='#ffffff', activebackground='#fbfbfb', command=delete_symbol)
 clear = Button(text='C', font='Times 16', bg='#ffffff', activebackground='#fbfbfb', command=delete_all)
@@ -144,41 +168,25 @@ memory_clear = Button(text='MC', font='Times 16', bg='#ffffff', activebackground
 equal = Button(text='=', font='Times 16', bg='#363533', fg='#f9f9f9', activebackground='#5c5b59', activeforeground='#bebdbd', command=calculation)
 fart = Button(text="fart", font='Times 16', fg=fart_color)
 
-one.place(x=4, y=450, width=150, height=55)
-two.place(x=156, y=450, width=150, height=55)
-three.place(x=308, y=450, width=150, height=55)
-four.place(x=4, y=393, width=150, height=55)
-five.place(x=156, y=393, width=150, height=55)
-six.place(x=308, y=393, width=150, height=55)
-seven.place(x=4, y=336, width=150, height=55)
-eight.place(x=156, y=336, width=150, height=55)
-nine.place(x=308, y=336, width=150, height=55)
-zero.place(x=156, y=507, width=150, height=55)
-
 backspace.place(x=460, y=222, width=150, height=55)
 clear.place(x=308, y=222, width=150, height=55)
 division.place(x=460, y=279, width=150, height=55)
 multiplication.place(x=460, y=336, width=150, height=55)
 subtraction.place(x=460, y=393, width=150, height=55)
 addition.place(x=460, y=450, width=150, height=55)
-equal.place(x=460, y=507, width=150, height=55)
 floating_point.place(x=308, y=507, width=150, height=55)
 left_bracket.place(x=156, y=279, width=150, height=55)
 right_bracket.place(x=308, y=279, width=150, height=55)
 memory_set.place(x=4, y=222, width=150, height=55)
 memory_recall.place(x=4, y=279, width=150, height=55)
 memory_clear.place(x=156, y=222, width=150, height=55)
+equal.place(x=460, y=507, width=150, height=55)
 fart.place(x=4, y=507, width=150, height=55)
-
-input_box.place(x=0, y=75, width=594, height=65)
-input_box.focus()
-memory.place(x=650, y=50)
 
 window.mainloop()
 
 # TODO: запрет на ввод символов с клавиатуры кроме цифр и математических символов
 # TODO: научить находить спаенные цифры с скобочками и вставлять туда *
 # TODO: отлов ZeroDivisionError (+ прикольчик!)
-# TODO: память
 # TODO: кнопка пердежа (прикольчик!)
 # TODO: UNIT тесты............
