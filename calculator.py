@@ -7,7 +7,6 @@ import pygame
 from PIL import Image, ImageTk
 from itertools import count, cycle
 
-
 window = Tk()
 window.title("Калькулятор")
 window.iconbitmap("icon.ico")
@@ -70,10 +69,6 @@ def rock_warning():
     rock.load('rock_sus.gif')
 
 
-
-
-
-
 def fart_sound():
     pass
 
@@ -90,8 +85,6 @@ def brackets(task):
             break
     return positions_of_brackets
 
-
-global zero_flag
 
 def processing(task):
     zero_flag = 0
@@ -163,23 +156,17 @@ def calculation():
     input_box.insert(0, str(task).replace('.', ','))
 
 
-fart_color = '#000000'
-
-input_box = Entry(font=("Segoe UI Semibold", 35), width=22, bg="#f7f7f7", selectbackground="#4c4a48", bd=0, justify=RIGHT)
-input_box.place(x=0, y=75, width=594, height=65)
-input_box.configure()
-input_box.focus()
-
-scrollbar = Scrollbar(window)
-scrollbar.place(x=910, height=571)
-memory = Listbox(window, font=("Segoe UI Semibold", 15), bg="#f7f7f7", selectbackground="#eaeaea",
-                 selectforeground="#000000", bd=0, highlightthickness=0, height=17, justify=RIGHT, yscrollcommand=scrollbar.set)
-memory.place(x=683, y=59)
-scrollbar.config(command=memory.yview)
+def callback(input):
+    if input == '':
+        return True
+    elif input[len(input) - 1] in "0123456789+-/*(),.":
+        return True
+    else:
+        return False
 
 
-def add_symbol(number):
-    input_box.insert(len(input_box.get()), number)
+def add_symbol(symbol):
+    input_box.insert(len(input_box.get()), symbol)
 
 
 def delete_symbol():
@@ -206,6 +193,23 @@ def clear_memory():
     memory.delete(0, END)
 
 
+# Color for future funny button
+fart_color = '#000000'
+
+reg = window.register(callback)
+input_box = Entry(window, font=("Segoe UI Semibold", 35), width=22, bg="#f7f7f7", selectbackground="#4c4a48", bd=0,
+                  justify=RIGHT, validate="key", validatecommand=(reg, '%P'))
+input_box.place(x=0, y=75, width=594, height=65)
+input_box.focus()
+
+scrollbar = Scrollbar(window)
+scrollbar.place(x=910, height=571)
+memory = Listbox(window, font=("Segoe UI Semibold", 15), bg="#f7f7f7", selectbackground="#eaeaea",
+                 selectforeground="#000000", bd=0, highlightthickness=0, height=17, justify=RIGHT,
+                 yscrollcommand=scrollbar.set)
+memory.place(x=683, y=59)
+scrollbar.config(command=memory.yview)
+
 one = Button(text='1', font='Times 16', bg='#ffffff', highlightcolor='#000000', command=lambda: add_symbol(1))
 two = Button(text='2', font='Times 16', bg='#ffffff', activebackground='#fbfbfb', command=lambda: add_symbol(2))
 three = Button(text='3', font='Times 16', bg='#ffffff', activebackground='#fbfbfb', command=lambda: add_symbol(3))
@@ -230,16 +234,22 @@ zero.place(x=156, y=507, width=150, height=55)
 backspace = Button(text='←', font='Times 16', bg='#ffffff', activebackground='#fbfbfb', command=delete_symbol)
 clear = Button(text='C', font='Times 16', bg='#ffffff', activebackground='#fbfbfb', command=delete_all)
 division = Button(text='/', font='Times 16', bg='#ffffff', activebackground='#fbfbfb', command=lambda: add_symbol('/'))
-multiplication = Button(text='*', font='Times 16', bg='#ffffff', activebackground='#fbfbfb', command=lambda: add_symbol('*'))
-subtraction = Button(text='-', font='Times 16', bg='#ffffff', activebackground='#fbfbfb', command=lambda: add_symbol('-'))
+multiplication = Button(text='*', font='Times 16', bg='#ffffff', activebackground='#fbfbfb',
+                        command=lambda: add_symbol('*'))
+subtraction = Button(text='-', font='Times 16', bg='#ffffff', activebackground='#fbfbfb',
+                     command=lambda: add_symbol('-'))
 addition = Button(text='+', font='Times 16', bg='#ffffff', activebackground='#fbfbfb', command=lambda: add_symbol('+'))
-floating_point = Button(text=',', font='Times 16', bg='#ffffff', activebackground='#fbfbfb', command=lambda: add_symbol(','))
-left_bracket = Button(text='(', font='Times 16', bg='#ffffff', activebackground='#fbfbfb', command=lambda: add_symbol('('))
-right_bracket = Button(text=')', font='Times 16', bg='#ffffff', activebackground='#fbfbfb', command=lambda: add_symbol(')'))
+floating_point = Button(text=',', font='Times 16', bg='#ffffff', activebackground='#fbfbfb',
+                        command=lambda: add_symbol(','))
+left_bracket = Button(text='(', font='Times 16', bg='#ffffff', activebackground='#fbfbfb',
+                      command=lambda: add_symbol('('))
+right_bracket = Button(text=')', font='Times 16', bg='#ffffff', activebackground='#fbfbfb',
+                       command=lambda: add_symbol(')'))
 memory_set = Button(text='MS', font='Times 16', bg='#ffffff', activebackground='#fbfbfb', command=add_to_memory)
 memory_recall = Button(text='MR', font='Times 16', bg='#ffffff', activebackground='#fbfbfb', command=get_from_memory)
 memory_clear = Button(text='MC', font='Times 16', bg='#ffffff', activebackground='#fbfbfb', command=clear_memory)
-equal = Button(text='=', font='Times 16', bg='#363533', fg='#f9f9f9', activebackground='#5c5b59', activeforeground='#bebdbd', command=calculation)
+equal = Button(text='=', font='Times 16', bg='#363533', fg='#f9f9f9', activebackground='#5c5b59',
+               activeforeground='#bebdbd', command=calculation)
 fart = Button(text="fart", font='Times 16', fg=fart_color)
 
 backspace.place(x=460, y=222, width=150, height=55)
@@ -259,7 +269,6 @@ fart.place(x=4, y=507, width=150, height=55)
 
 window.mainloop()
 
-# TODO: запрет на ввод символов с клавиатуры кроме цифр и математических символов
 # TODO: научить находить спаенные цифры с скобочками и вставлять туда *
 # TODO: кнопка пердежа (прикольчик!)
 # TODO: UNIT тесты............
