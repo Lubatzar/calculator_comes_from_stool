@@ -136,6 +136,14 @@ def processing(task):
 def calculation():
     task = input_box.get().replace(',', '.')
 
+    i = 0
+    while i != len(task) - 1:
+        if task[i].isdigit() and task[i+1] == '(':
+            task = task[0:i+1] + '*' + task[i+1:len(task)]
+        elif task[i] == ')' and task[i+1].isdigit():
+            task = task[0:i+1] + '*' + task[i + 1:len(task)]
+        i += 1
+
     while True:
         pos = brackets(task)
         if not pos:
