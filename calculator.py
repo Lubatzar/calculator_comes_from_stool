@@ -1,11 +1,12 @@
 import re
 import tkinter
 from tkinter import *
-from tkinter import messagebox
 from tkinter import Tk
 import pygame
 from PIL import Image, ImageTk
 from itertools import count, cycle
+import unittest
+import random
 
 window = Tk()
 window.title("Калькулятор")
@@ -70,7 +71,11 @@ def rock_warning():
 
 
 def fart_sound():
-    pass
+    pos = random.randint(0, 11)
+    farts = ["farts/fart_1.mp3", "farts/fart_2.mp3", "farts/fart_3.mp3", "farts/fart_4.mp3", "farts/fart_5.mp3", "farts/fart_6.mp3",
+             "farts/fart_7.mp3", "farts/fart_8.mp3", "farts/fart_9.mp3", "farts/fart_10.mp3", "farts/fart_11.mp3", "farts/fart_12.mp3"]
+    pygame.mixer.music.load(farts[pos])
+    pygame.mixer.music.play()
 
 
 def brackets(task):
@@ -138,10 +143,10 @@ def calculation():
 
     i = 0
     while i != len(task) - 1:
-        if task[i].isdigit() and task[i+1] == '(':
-            task = task[0:i+1] + '*' + task[i+1:len(task)]
-        elif task[i] == ')' and task[i+1].isdigit():
-            task = task[0:i+1] + '*' + task[i + 1:len(task)]
+        if task[i].isdigit() and task[i + 1] == '(':
+            task = task[0:i + 1] + '*' + task[i + 1:len(task)]
+        elif task[i] == ')' and task[i + 1].isdigit():
+            task = task[0:i + 1] + '*' + task[i + 1:len(task)]
         i += 1
 
     while True:
@@ -162,6 +167,7 @@ def calculation():
 
     input_box.delete(0, END)
     input_box.insert(0, str(task).replace('.', ','))
+    return str(task).replace('.', ',')
 
 
 def callback(input):
@@ -212,9 +218,8 @@ input_box.focus()
 
 scrollbar = Scrollbar(window)
 scrollbar.place(x=910, height=571)
-memory = Listbox(window, font=("Segoe UI Semibold", 15), bg="#f7f7f7", selectbackground="#eaeaea",
-                 selectforeground="#000000", bd=0, highlightthickness=0, height=17, justify=RIGHT,
-                 yscrollcommand=scrollbar.set)
+memory = Listbox(window, font=("Segoe UI Semibold", 15), bg="#f7f7f7", bd=0, selectbackground="#eaeaea", height=17,
+                 selectforeground="#000000", highlightthickness=0, justify=RIGHT, yscrollcommand=scrollbar.set)
 memory.place(x=683, y=59)
 scrollbar.config(command=memory.yview)
 
@@ -258,7 +263,7 @@ memory_recall = Button(text='MR', font='Times 16', bg='#ffffff', activebackgroun
 memory_clear = Button(text='MC', font='Times 16', bg='#ffffff', activebackground='#fbfbfb', command=clear_memory)
 equal = Button(text='=', font='Times 16', bg='#363533', fg='#f9f9f9', activebackground='#5c5b59',
                activeforeground='#bebdbd', command=calculation)
-fart = Button(text="fart", font='Times 16', fg=fart_color)
+fart = Button(text="fart", font='Times 16', fg=fart_color, command=fart_sound)
 
 backspace.place(x=460, y=222, width=150, height=55)
 clear.place(x=308, y=222, width=150, height=55)
@@ -277,6 +282,26 @@ fart.place(x=4, y=507, width=150, height=55)
 
 window.mainloop()
 
-# TODO: научить находить спаенные цифры с скобочками и вставлять туда *
+
+# class TestCalculator(unittest.TestCase):
+#     def setUp(self):
+#         self.calculator = calculation()
+#
+#     def test_add(self):
+#         self.assertEqual(calculation("5+6"), '11')
+#
+#     def test_subtract(self):
+#         self.assertEqual(self.calculator.subtract(10, 5), 5)
+#
+#     def test_multiply(self):
+#         self.assertEqual(self.calculator.multiply(3, 7), 21)
+#
+#     def test_divide(self):
+#         self.assertEqual(self.calculator.divide(10, 2), 5)
+#
+#
+# if __name__ == "__main__":
+#     unittest.main()
+
 # TODO: кнопка пердежа (прикольчик!)
 # TODO: UNIT тесты............
