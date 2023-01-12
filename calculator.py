@@ -1,14 +1,81 @@
 import re
+import tkinter
 from tkinter import *
 from tkinter import messagebox
 from tkinter import Tk
-from tkinter.font import families
+import pygame
+from PIL import Image, ImageTk
+from itertools import count, cycle
+
 
 window = Tk()
 window.title("Калькулятор")
 window.iconbitmap("icon.ico")
-window.geometry('928x571')
-window['bg'] = '#f7f7f7'
+window.geometry("928x571")
+window['bg'] = "#f7f7f7"
+
+pygame.mixer.init()
+
+
+class ImageLabel(tkinter.Label):
+    """
+    A Label that displays images, and plays them if they are gifs
+    :im: A PIL Image instance or a string filename
+    """
+
+    def load(self, im):
+        if isinstance(im, str):
+            im = Image.open(im)
+        frames = []
+
+        try:
+            for i in count(1):
+                frames.append(ImageTk.PhotoImage(im.copy()))
+                im.seek(i)
+        except EOFError:
+            pass
+        self.frames = cycle(frames)
+
+        try:
+            self.delay = im.info['duration']
+        except:
+            self.delay = 100
+
+        if len(frames) == 1:
+            self.config(image=next(self.frames))
+        else:
+            self.next_frame()
+
+    def unload(self):
+        self.config(image=None)
+        self.frames = None
+
+    def next_frame(self):
+        if self.frames:
+            self.config(image=next(self.frames))
+            self.after(self.delay, self.next_frame)
+
+
+def rock_warning():
+    division_by_zero = Toplevel(window)
+    division_by_zero.title("ось ти і попався, пустуня")
+    division_by_zero.geometry("640x640")
+    division_by_zero.config(bg="#f3f3f3")
+
+    pygame.mixer.music.load("rock_sus.mp3")
+    pygame.mixer.music.play()
+
+    rock = ImageLabel(division_by_zero)
+    rock.pack()
+    rock.load('rock_sus.gif')
+
+
+
+
+
+
+def fart_sound():
+    pass
 
 
 def brackets(task):
@@ -20,12 +87,14 @@ def brackets(task):
         elif task[i] == ')' and i not in positions_of_brackets and left_bracket_pos != -1:
             positions_of_brackets.append(left_bracket_pos)
             positions_of_brackets.append(i)
-            # left_bracket_pos = -1
             break
     return positions_of_brackets
 
 
+global zero_flag
+
 def processing(task):
+    zero_flag = 0
     symbols = []
 
     for i in task:
@@ -35,7 +104,6 @@ def processing(task):
     task = re.split(r'[-+/*]', task)
 
     if '' in task:
-        # n = len(task)
         for i in range(len(task) - task.count('')):
             if task[i] == '':
                 task[i] = str(0 - float(task[i + 1]))
@@ -51,8 +119,9 @@ def processing(task):
             try:
                 temp = float(task[j]) / float(task[j + 1])
             except ZeroDivisionError:
-                pass
-
+                rock_warning()
+                zero_flag = 1
+                break
         elif '*' in symbols:
             j = symbols.index('*')
             symbols.remove('*')
@@ -68,7 +137,7 @@ def processing(task):
         task.pop(j + 1)
         task[j] = temp
 
-    return task[0]
+    return task[0], zero_flag
 
 
 def calculation():
@@ -77,14 +146,20 @@ def calculation():
     while True:
         pos = brackets(task)
         if not pos:
-            task = float(processing(task))
+            task = processing(task)
+            if task[1] == 1:
+                task = '0.0'
+            else:
+                task = float(task[0])
             break
         else:
             temp = processing(task[(pos[0] + 1):pos[1]])
-            task = task[0:pos[0]] + str(temp) + task[pos[1] + 1:len(task)]
-        # pos = 1
+            if temp[1] == 1:
+                task = '0.0'
+            else:
+                task = task[0:pos[0]] + str(temp[0]) + task[pos[1] + 1:len(task)]
 
-    input_box.delete(0, len(input_box.get()))
+    input_box.delete(0, END)
     input_box.insert(0, str(task).replace('.', ','))
 
 
@@ -101,7 +176,6 @@ memory = Listbox(window, font=("Segoe UI Semibold", 15), bg="#f7f7f7", selectbac
                  selectforeground="#000000", bd=0, highlightthickness=0, height=17, justify=RIGHT, yscrollcommand=scrollbar.set)
 memory.place(x=683, y=59)
 scrollbar.config(command=memory.yview)
-
 
 
 def add_symbol(number):
@@ -187,6 +261,5 @@ window.mainloop()
 
 # TODO: запрет на ввод символов с клавиатуры кроме цифр и математических символов
 # TODO: научить находить спаенные цифры с скобочками и вставлять туда *
-# TODO: отлов ZeroDivisionError (+ прикольчик!)
 # TODO: кнопка пердежа (прикольчик!)
 # TODO: UNIT тесты............
